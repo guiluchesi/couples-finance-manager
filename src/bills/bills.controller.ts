@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { FindOneOptions } from 'typeorm';
 
 import { BillsService } from './bills.service';
@@ -21,6 +21,7 @@ export class BillsController {
     });
   }
 
+  @Post()
   async createBill(@Body() user: Bill): Promise<Bill> {
     return this.usersService.create(user);
   }

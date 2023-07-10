@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { FindOneOptions } from 'typeorm';
 
 import { User } from './entities/user.entity';
@@ -21,6 +21,7 @@ export class UsersController {
     });
   }
 
+  @Post()
   async createUser(@Body() user: User): Promise<User> {
     return this.usersService.create(user);
   }
