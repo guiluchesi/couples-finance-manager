@@ -4,7 +4,7 @@ import { FindOneOptions } from 'typeorm';
 import { BillsService } from './bills.service';
 import { Bill } from './entities/bill.entity';
 
-@Controller('users')
+@Controller('bills')
 export class BillsController {
   constructor(private readonly usersService: BillsService) {}
 
