@@ -117,4 +117,21 @@ describe('UsersService', () => {
       }
     });
   });
+
+  describe('calculateBillParticipation', () => {
+    it('should add the percentage of the bills to users', () => {
+      const mockedUsers = generateFakeUsers().map((user) => ({
+        ...user,
+        income: 1000,
+      }));
+
+      const usersWithBillParticipation =
+        service.calcuteBillParticipation(mockedUsers);
+
+      const usersBillPercentage = usersWithBillParticipation.map(
+        (user) => user.billParticipation,
+      );
+      expect(usersBillPercentage).toEqual([0.5, 0.5]);
+    });
+  });
 });

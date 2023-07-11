@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
 import { User } from './entities/user.entity';
+import { UserWithBillParticipationRto } from './rto/user-with-bill-participation.rto';
 
 @Injectable()
 export class UsersService {
@@ -33,5 +34,14 @@ export class UsersService {
     } catch (error) {
       throw new BadRequestException('Malformatted user data');
     }
+  }
+
+  calcuteBillParticipation(users: User[]): UserWithBillParticipationRto[] {
+    const totalIncome = users.reduce((acc, user) => acc + user.income ?? 0, 0);
+
+    return users.map((user) => ({
+      ...user,
+      billParticipation: Number((user.income / totalIncome).toFixed(2)),
+    }));
   }
 }

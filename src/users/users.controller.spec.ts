@@ -9,6 +9,7 @@ const createMockService = (): MockService => ({
   findAll: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
+  calcuteBillParticipation: jest.fn(),
 });
 
 describe('UsersController', () => {
@@ -72,6 +73,36 @@ describe('UsersController', () => {
       const createdUser = await controller.createUser(user);
 
       expect(createdUser).toEqual(user);
+    });
+  });
+
+  describe('getUsersBillParticipation', () => {
+    const mockedUsers = generateFakeUsers();
+
+    it('should return an array of users with bill participation', async () => {
+      const mockedUsersFixedIncome = mockedUsers.map((user) => ({
+        ...user,
+        income: 1000,
+      }));
+      const usersWithExpectedParticipation = mockedUsersFixedIncome.map(
+        (user) => ({
+          ...user,
+          billParticipation: 0.5,
+        }),
+      );
+
+      userService.findAll.mockResolvedValueOnce(mockedUsersFixedIncome);
+      userService.calcuteBillParticipation.mockReturnValueOnce(
+        usersWithExpectedParticipation,
+      );
+
+      const users = await controller.getUsersBillParticipation();
+
+      expect(userService.findAll).toBeCalledTimes(1);
+      expect(userService.calcuteBillParticipation).toBeCalledWith(
+        mockedUsersFixedIncome,
+      );
+      expect(users).toEqual(usersWithExpectedParticipation);
     });
   });
 });
