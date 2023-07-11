@@ -6,6 +6,7 @@ export const generateFakeBill = (): Bill => ({
   id: faker.string.uuid(),
   name: faker.person.fullName(),
   amount: Number(faker.finance.amount({ min: 1000, max: 10000 })),
+  groupId: faker.string.uuid(),
 });
 
 export const generateFakeBills = (amountOfBills = 2): Bill[] => {

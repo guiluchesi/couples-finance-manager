@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Group } from 'src/groups/entities/group.entity';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Bill {
@@ -10,4 +11,8 @@ export class Bill {
 
   @Column()
   amount: number;
+
+  @Index('groupIdToBill')
+  @Column('uuid')
+  groupId: Group['id'];
 }
