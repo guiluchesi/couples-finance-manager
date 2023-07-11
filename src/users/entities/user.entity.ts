@@ -1,4 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+import { Group } from 'src/groups/entities/group.entity';
 
 @Entity()
 export class User {
@@ -16,4 +24,10 @@ export class User {
 
   @Column()
   income: number;
+
+  @ManyToMany(() => Group, (groups) => groups.users)
+  groups?: Group[];
+
+  @ManyToOne(() => Group, (group) => group.owner)
+  ownedGroups?: Group[];
 }
