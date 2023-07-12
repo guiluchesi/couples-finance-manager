@@ -6,6 +6,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
+import { User } from 'src/users/entities/user.entity';
+
 import { Group } from './entities/group.entity';
 
 @Injectable()
@@ -33,5 +35,10 @@ export class GroupsService {
     } catch (error) {
       throw new BadRequestException('Malformatted group data');
     }
+  }
+
+  async getUsers(groupId: string): Promise<User[]> {
+    const group = await this.findOne({ where: { id: groupId } });
+    return group.users;
   }
 }
