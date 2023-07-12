@@ -9,6 +9,7 @@ const createMockService = (): MockService => ({
   findAll: jest.fn(),
   findOne: jest.fn(),
   create: jest.fn(),
+  getSplitBill: jest.fn(),
 });
 
 describe('GroupsController', () => {
@@ -72,6 +73,31 @@ describe('GroupsController', () => {
       const createdGroup = await controller.createGroup(group);
 
       expect(createdGroup).toEqual(group);
+    });
+  });
+
+  describe('getSplitBill', () => {
+    const group = generateFakeGroup();
+
+    it('should return the split bill', async () => {
+      const splitBill = [
+        { userId: '1', amount: 10 },
+        { userId: '2', amount: 20 },
+      ];
+      groupService.findOne.mockResolvedValueOnce(group);
+      groupService.getSplitBill.mockResolvedValueOnce(splitBill);
+
+      const result = await controller.getSplitBill(group.id);
+
+      expect(groupService.findOne).toBeCalledTimes(1);
+      expect(groupService.findOne).toBeCalledWith({
+        where: { id: group.id },
+        relations: ['users', 'bills'],
+      });
+
+      expect(groupService.getSplitBill).toBeCalledTimes(1);
+      expect(groupService.getSplitBill).toBeCalledWith(group);
+      expect(result).toEqual(splitBill);
     });
   });
 });

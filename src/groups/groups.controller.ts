@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { FindOneOptions } from 'typeorm';
 
 import { Group } from './entities/group.entity';
@@ -24,5 +24,15 @@ export class GroupsController {
   @Post()
   async createGroup(@Body() user: Group): Promise<Group> {
     return this.usersService.create(user);
+  }
+
+  @Get(':id/split-bill')
+  async getSplitBill(@Param('id') groupId: string) {
+    const group = await this.usersService.findOne({
+      where: { id: groupId },
+      relations: ['users', 'bills'],
+    });
+
+    return this.usersService.getSplitBill(group);
   }
 }
