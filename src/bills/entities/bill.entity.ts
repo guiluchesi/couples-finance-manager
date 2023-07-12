@@ -1,5 +1,6 @@
-import { Group } from 'src/groups/entities/group.entity';
 import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Group } from 'src/groups/entities/group.entity';
 
 @Entity()
 export class Bill {

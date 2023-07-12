@@ -4,8 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { BillsModule } from './bills/bills.module';
-import { UsersModule } from './users/users.module';
 import { GroupsModule } from './groups/groups.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
