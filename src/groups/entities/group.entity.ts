@@ -21,7 +21,7 @@ export class Group {
 
   @JoinTable()
   @ManyToMany(() => User, (user) => user.groups)
-  users?: User;
+  users?: User[];
 
   @ManyToOne(() => User, (user) => user.ownedGroups)
   owner: User;
