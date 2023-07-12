@@ -41,7 +41,7 @@ export class UsersService {
 
     return users.map((user) => ({
       ...user,
-      billParticipation: Number((user.income / totalIncome).toFixed(2)),
+      billParticipation: user.income / totalIncome,
     }));
   }
 }
