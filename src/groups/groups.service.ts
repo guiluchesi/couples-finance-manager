@@ -6,8 +6,6 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
-import { User } from 'src/users/entities/user.entity';
-
 import { BillsService } from 'src/bills/bills.service';
 import { UsersService } from 'src/users/users.service';
 import { Group } from './entities/group.entity';
@@ -39,11 +37,6 @@ export class GroupsService {
     } catch (error) {
       throw new BadRequestException('Malformatted group data');
     }
-  }
-
-  async getUsers(groupId: string): Promise<User[]> {
-    const group = await this.findOne({ where: { id: groupId } });
-    return group.users;
   }
 
   async getSplitBill(group: Group) {

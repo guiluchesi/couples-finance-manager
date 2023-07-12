@@ -147,16 +147,6 @@ describe('GroupsService', () => {
     });
   });
 
-  describe('getUsers', () => {
-    it('should return an array of users associated with the group', async () => {
-      const mockedGroup = generateFakeGroup();
-      groupRepository.findOne.mockResolvedValueOnce(mockedGroup);
-
-      const users = await service.getUsers(mockedGroup.id);
-      expect(users).toBe(mockedGroup.users);
-    });
-  });
-
   describe('getSplitBill', () => {
     it('should return the split bill for the group', async () => {
       const mockedGroup = generateFakeGroup();
