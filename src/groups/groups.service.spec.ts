@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { UsersService } from 'src/users/users.service';
 import { Group } from './entities/group.entity';
 import {
   generateFakeGroup,
@@ -11,6 +12,9 @@ import {
 import { GroupsService } from './groups.service';
 
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
+type MockService<T = any> = Partial<Record<keyof T, jest.Mock>>;
+type MockUserService = MockService<UsersService>;
+
 const createMockRepository = <T = any>(): MockRepository<T> => ({
   find: jest.fn(),
   findOne: jest.fn(),
@@ -18,9 +22,14 @@ const createMockRepository = <T = any>(): MockRepository<T> => ({
   save: jest.fn(),
 });
 
+const usersServiceMock: MockUserService = {
+  calcuteBillParticipation: jest.fn(),
+};
+
 describe('GroupsService', () => {
   let service: GroupsService;
   let groupRepository: MockRepository<Group>;
+  let userService: MockUserService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,11 +39,16 @@ describe('GroupsService', () => {
           provide: getRepositoryToken(Group),
           useValue: createMockRepository(),
         },
+        {
+          provide: UsersService,
+          useValue: usersServiceMock,
+        },
       ],
     }).compile();
 
-    service = module.get<GroupsService>(GroupsService);
+    service = module.get(GroupsService);
     groupRepository = module.get(getRepositoryToken(Group));
+    userService = module.get<MockUserService>(UsersService);
   });
 
   it('should be defined', () => {
@@ -128,6 +142,34 @@ describe('GroupsService', () => {
 
       const users = await service.getUsers(mockedGroup.id);
       expect(users).toBe(mockedGroup.users);
+    });
+  });
+
+  describe('getSplitBill', () => {
+    it('should return the split bill for the group', async () => {
+      const mockedGroup = generateFakeGroup();
+      const [firstUser, secondUser] = mockedGroup.users;
+      const totalBill = 6000;
+
+      groupRepository.findOne.mockResolvedValueOnce(mockedGroup);
+      userService.calcuteBillParticipation.mockReturnValueOnce([
+        { ...firstUser, billParticipation: 1 / 3 },
+        { ...secondUser, billParticipation: 2 / 3 },
+      ]);
+      jest.spyOn(service, 'calculateTotalBill').mockReturnValueOnce(totalBill);
+
+      const splitBill = await service.getSplitBill(mockedGroup.id);
+
+      expect(splitBill).toEqual([
+        {
+          userId: firstUser.id,
+          amount: 2000,
+        },
+        {
+          userId: secondUser.id,
+          amount: 4000,
+        },
+      ]);
     });
   });
 });
