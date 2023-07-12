@@ -1,15 +1,17 @@
 import { faker } from '@faker-js/faker';
 
+import { generateFakeBills } from 'src/bills/factories/bills.factory';
 import {
   generateFakeUser,
   generateFakeUsers,
 } from 'src/users/factories/users.factory';
+
 import { Group } from '../entities/group.entity';
 
 export const generateFakeGroup = (): Group => ({
   id: faker.string.uuid(),
   name: faker.lorem.words(3),
-  bills: [],
+  bills: generateFakeBills(3),
   owner: generateFakeUser(),
   users: generateFakeUsers(2),
 });
