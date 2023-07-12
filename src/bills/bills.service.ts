@@ -34,4 +34,8 @@ export class BillsService {
       throw new BadRequestException('Malformatted user data');
     }
   }
+
+  calculateTotal(bills: Bill[]) {
+    return bills.reduce((acc, bill) => acc + bill.amount, 0);
+  }
 }

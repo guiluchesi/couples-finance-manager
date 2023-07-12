@@ -117,4 +117,18 @@ describe('BillsService', () => {
       }
     });
   });
+
+  describe('calculateTotal', () => {
+    it('should calculate the total bill', () => {
+      const mockedBills = generateFakeBills();
+      const billsWithFixedAmount = mockedBills.map((bill) => ({
+        ...bill,
+        amount: 10,
+      }));
+
+      const total = service.calculateTotal(billsWithFixedAmount);
+
+      expect(total).toBe(10 * billsWithFixedAmount.length);
+    });
+  });
 });
