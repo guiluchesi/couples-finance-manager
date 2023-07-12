@@ -46,8 +46,7 @@ export class GroupsService {
     return group.users;
   }
 
-  async getSplitBill(groupId: string) {
-    const group = await this.findOne({ where: { id: groupId } });
+  async getSplitBill(group: Group) {
     const totalBill = this.billService.calculateTotal(group.bills);
 
     const userWithBillParticipation = this.userService.calcuteBillParticipation(

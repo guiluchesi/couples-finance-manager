@@ -170,7 +170,7 @@ describe('GroupsService', () => {
       ]);
       billService.calculateTotal.mockReturnValueOnce(totalBill);
 
-      const splitBill = await service.getSplitBill(mockedGroup.id);
+      const splitBill = await service.getSplitBill(mockedGroup);
 
       expect(splitBill).toEqual([
         {
