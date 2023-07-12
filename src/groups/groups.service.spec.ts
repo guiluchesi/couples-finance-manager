@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { BillsService } from 'src/bills/bills.service';
 import { UsersService } from 'src/users/users.service';
 import { Group } from './entities/group.entity';
 import {
@@ -14,6 +15,7 @@ import { GroupsService } from './groups.service';
 type MockRepository<T = any> = Partial<Record<keyof Repository<T>, jest.Mock>>;
 type MockService<T = any> = Partial<Record<keyof T, jest.Mock>>;
 type MockUserService = MockService<UsersService>;
+type MockBillService = MockService<BillsService>;
 
 const createMockRepository = <T = any>(): MockRepository<T> => ({
   find: jest.fn(),
@@ -26,10 +28,15 @@ const usersServiceMock: MockUserService = {
   calcuteBillParticipation: jest.fn(),
 };
 
+const billsServiceMock: MockBillService = {
+  calculateTotal: jest.fn(),
+};
+
 describe('GroupsService', () => {
   let service: GroupsService;
   let groupRepository: MockRepository<Group>;
   let userService: MockUserService;
+  let billService: MockBillService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -43,12 +50,17 @@ describe('GroupsService', () => {
           provide: UsersService,
           useValue: usersServiceMock,
         },
+        {
+          provide: BillsService,
+          useValue: billsServiceMock,
+        },
       ],
     }).compile();
 
     service = module.get(GroupsService);
     groupRepository = module.get(getRepositoryToken(Group));
     userService = module.get<MockUserService>(UsersService);
+    billService = module.get<MockBillService>(BillsService);
   });
 
   it('should be defined', () => {
@@ -156,7 +168,7 @@ describe('GroupsService', () => {
         { ...firstUser, billParticipation: 1 / 3 },
         { ...secondUser, billParticipation: 2 / 3 },
       ]);
-      jest.spyOn(service, 'calculateTotalBill').mockReturnValueOnce(totalBill);
+      billService.calculateTotal.mockReturnValueOnce(totalBill);
 
       const splitBill = await service.getSplitBill(mockedGroup.id);
 

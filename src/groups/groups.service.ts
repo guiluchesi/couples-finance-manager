@@ -8,6 +8,7 @@ import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 
 import { User } from 'src/users/entities/user.entity';
 
+import { BillsService } from 'src/bills/bills.service';
 import { UsersService } from 'src/users/users.service';
 import { Group } from './entities/group.entity';
 
@@ -17,6 +18,7 @@ export class GroupsService {
     @InjectRepository(Group)
     private readonly groupRepository: Repository<Group>,
     private readonly userService: UsersService,
+    private readonly billService: BillsService,
   ) {}
 
   async findAll(query?: FindManyOptions<Group>): Promise<Group[]> {
@@ -44,13 +46,9 @@ export class GroupsService {
     return group.users;
   }
 
-  calculateTotalBill() {
-    return 100;
-  }
-
   async getSplitBill(groupId: string) {
     const group = await this.findOne({ where: { id: groupId } });
-    const totalBill = this.calculateTotalBill();
+    const totalBill = this.billService.calculateTotal(group.bills);
 
     const userWithBillParticipation = this.userService.calcuteBillParticipation(
       group.users,
