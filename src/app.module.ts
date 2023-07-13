@@ -12,7 +12,7 @@ import { UsersModule } from './users/users.module';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
+      host: process.env.DATA_BASE_HOST,
       port: Number(process.env.DATA_PORT),
       username: process.env.DATA_BASE_USER,
       password: process.env.DATA_BASE_PASSWORD,
