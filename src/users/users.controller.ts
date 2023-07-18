@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { FindOneOptions } from 'typeorm';
 
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
 import { UserWithBillParticipationRto } from './rto/user-with-bill-participation.rto';
 import { UsersService } from './users.service';
@@ -10,15 +10,13 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  async getUsers(
-    @Query('take') take: number,
-    @Query('skip') skip: number,
-    @Query() query: FindOneOptions<User>['where'],
-  ): Promise<User[]> {
+  async getUsers(@Query() query: CreateUserDto): Promise<User[]> {
+    const { take, skip, ...where } = query;
+
     return this.usersService.findAll({
-      where: query,
-      take,
-      skip,
+      where,
+      take: take || undefined,
+      skip: skip || undefined,
     });
   }
 
