@@ -32,6 +32,12 @@ export class UsersService {
       const user = this.userRepository.create(data);
       return await this.userRepository.save(user);
     } catch (error) {
+      if (/already exists/.test(error.detail)) {
+        throw new BadRequestException(
+          'Account with this username already exists',
+        );
+      }
+
       throw new BadRequestException('Malformatted user data');
     }
   }

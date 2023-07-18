@@ -116,6 +116,20 @@ describe('UsersService', () => {
         expect(error.message).toBe('Malformatted user data');
       }
     });
+
+    it('should throw an error if the username already exists', async () => {
+      userRepository.save.mockRejectedValueOnce({
+        detail: 'Key (username)=(username) already exists.',
+      });
+
+      try {
+        await service.create(mockedUser);
+        expect(false).toBe(true);
+      } catch (error) {
+        expect(error).toBeInstanceOf(BadRequestException);
+        expect(error.message).toBe('Account with this username already exists');
+      }
+    });
   });
 
   describe('calculateBillParticipation', () => {
